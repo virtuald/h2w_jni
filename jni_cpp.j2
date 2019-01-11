@@ -1,0 +1,16 @@
+{% for header in headers %}
+
+{% for cls in header.classes %}
+{% for fn in cls.methods.public if not fn.skip %}
+{% set comma = joiner(",") %}
+
+JNIEXPORT {{ fn.jni_returns }} JNICALL
+{{ fn.name }}(JNIEnv *, jobject *obj{% for p in fn.parameters %}, {{ p.jni_type }} {{ p.jni_name }}{% endfor %}) {
+    auto *n = get_handle<{{ cls.name }}>(env, obj);
+    return n->{{ fn.name }}({% for p in fn.parameters %}{{ p.name }}{{ comma() }}{% endfor %});
+}
+
+{% endfor %}
+}
+{% endfor %}
+{% endfor %}

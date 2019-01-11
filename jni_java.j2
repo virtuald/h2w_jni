@@ -1,0 +1,12 @@
+{% for header in headers %}
+
+{% for cls in header.classes %}
+public class {{ cls.name }}JNI {
+
+{% for fn in cls.methods.public if not fn.skip %}
+    {% set comma = joiner(",") %}
+    public native {{ fn.jni_returns }} {{ fn.name }}({% for param in fn.parameters %}{{ param.type }} {{ param.name }}{{ comma() }}{% endfor %});
+{% endfor %}
+}
+{% endfor %}
+{% endfor %}
